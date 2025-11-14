@@ -1,0 +1,62 @@
+{
+  "id": "com.sap.chatbot.glaccount.analytics",
+  "version": "6.14.0",
+  "name": "SAP GL Account Analytics Chatbot",
+  "description": "Advanced SAP GL Account Analytics chatbot with enhanced GL Account Line Item support, improved drill-down capabilities, data visualization, and comprehensive SAP data integration",
+  "newInstancePrefix": "ChatWidget",
+  "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjAgMkg0Yy0xLjEgMC0yIC45LTIgMnYxOGwyLTJoMTZjMS4xIDAgMi0uOSAyLTJWNGMwLTEuMS0uOS0yLTItMnptLTMgMTJIMTJ2LTJoNXYyem0wLTNoLTkuMDRWOUgxN3YyeiIvPjwvc3ZnPg==",
+  "vendor": "Custom",
+  "eula": "",
+  "license": "",
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "sap-chatbot-widget",
+      "url": "https://fi-retail-sac-custom-widget.cfapps.us10.hana.ondemand.com/widget/widget-rinku.js?v=6.14.0",
+      "integrity": "",
+      "ignoreIntegrity": true
+    }
+  ],
+  "properties": {
+    "apiEndpoint": {
+      "type": "string",
+      "description": "API endpoint URL",
+      "default": "https://fi-retail-sac-custom-widget.cfapps.us10.hana.ondemand.com/api"
+    },
+    "apiKey": {
+      "type": "string",
+      "description": "API Key for authentication",
+      "default": ""
+    },
+    "width": {
+      "type": "integer",
+      "default": 400
+    },
+    "height": {
+      "type": "integer",
+      "default": 600
+    }
+  },
+  "methods": {
+    "sendQuery": {
+      "description": "Send a query to the chatbot",
+      "parameters": [
+        {
+          "name": "query",
+          "type": "string",
+          "description": "The natural language query"
+        }
+      ],
+      "body": "this.sendQuery(query);"
+    },
+    "clearChat": {
+      "description": "Clear the chat history",
+      "body": "this.clearChat();"
+    }
+  },
+  "events": {
+    "onDataReceived": {
+      "description": "Fired when data is received from the API"
+    }
+  }
+}
