@@ -134,8 +134,8 @@ router.get('/test-connection', async (req: express.Request, res: express.Respons
     try {
       // First, try to access the root OData service to see what's available
       const { DestinationService } = require('../clients/destination-client');
-      const destinationService = new DestinationService();
-        const destination = await destinationService.getDestination('DIP_SEQ_DEST_200');
+        const destinationService = new DestinationService();
+        const destination = await destinationService.getDestination('SED120');
       
       if (!destination) {
         throw new Error('Could not get destination configuration');
@@ -232,8 +232,8 @@ router.get('/test-gateway-query', async (req: express.Request, res: express.Resp
   try {
     logger.info('Testing exact SAP Gateway Client query...');
     
-    const destinationService = new DestinationService();
-      const destination = await destinationService.getDestination('DIP_SEQ_DEST_200');
+      const destinationService = new DestinationService();
+      const destination = await destinationService.getDestination('SED120');
     
     if (!destination) {
       throw new Error('Could not get destination configuration');
