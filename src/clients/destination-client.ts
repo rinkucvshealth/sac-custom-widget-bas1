@@ -2,6 +2,8 @@ import axios from 'axios';
 // @ts-ignore
 import * as xsenv from '@sap/xsenv';
 
+const DEFAULT_CLOUD_CONNECTOR_LOCATION_ID = 'SAP_DI_Test';
+
 export interface Destination {
   Name: string;
   Type: string;
@@ -87,7 +89,7 @@ export class DestinationService {
               Password: config.Password || process.env.SAP_PASSWORD,
               ProxyType: config.ProxyType || 'OnPremise',
               sapclient: config.sapclient || process.env.SAP_CLIENT,
-              cloudConnectorLocationId: config.CloudConnectorLocationId || config.cloudConnectorLocationId || process.env.CLOUD_CONNECTOR_LOCATION_ID
+                cloudConnectorLocationId: config.CloudConnectorLocationId || config.cloudConnectorLocationId || process.env.CLOUD_CONNECTOR_LOCATION_ID || DEFAULT_CLOUD_CONNECTOR_LOCATION_ID
             };
 
             console.log('Using BTP destination service for', destinationName);
@@ -115,7 +117,7 @@ export class DestinationService {
         Password: process.env.SAP_PASSWORD,
         ProxyType: 'OnPremise',
           sapclient: process.env.SAP_CLIENT,
-          cloudConnectorLocationId: process.env.CLOUD_CONNECTOR_LOCATION_ID
+          cloudConnectorLocationId: process.env.CLOUD_CONNECTOR_LOCATION_ID || DEFAULT_CLOUD_CONNECTOR_LOCATION_ID
       };
 
       console.log('Using environment fallback for', destinationName);

@@ -81,7 +81,7 @@ export async function getServiceMetadata(serviceName: string): Promise<ServiceMe
         
         // Use destination service if available
         const destinationService = new DestinationService();
-        const destination = await destinationService.getDestination('DIP_SEQ_DEST_200');
+        const destination = await destinationService.getDestination('SED120');
         
         if (!destination) {
             throw new Error('Could not get destination configuration');
@@ -280,7 +280,7 @@ export async function getEntityData(serviceName: string, entityName: string, fil
         
         // Use destination service if available
         const destinationService = new DestinationService();
-        const destination = await destinationService.getDestination('DIP_SEQ_DEST_200');
+        const destination = await destinationService.getDestination('SED120');
         
         if (!destination) {
             throw new Error('Could not get destination configuration');
