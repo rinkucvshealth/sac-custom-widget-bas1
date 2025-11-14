@@ -1,12 +1,11 @@
----
----
+
 applications:
 - name: fi-retail-sac-custom-widget
   memory: 512M
   disk_quota: 1G
   instances: 1
   buildpack: nodejs_buildpack
-  routes:
+  route:
     - host: fi-retail-sac-custom-widget
       domain: cfapps.us10.hana.ondemand.com
   command: npm start
