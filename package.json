@@ -7,6 +7,7 @@
     "build": "tsc",
     "dev": "ts-node src/server.ts",
     "start": "node dist/server.js",
+    "postinstall": "npm run build",
     "watch": "tsc --watch",
     "cf-push": "cf push",
     "cf-deploy": "cf push --no-start && cf set-env sac-custom-widget NODE_ENV production && cf start sac-custom-widget"
