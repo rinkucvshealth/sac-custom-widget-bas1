@@ -10,6 +10,49 @@ import { calculateAggregation, mightHaveMoreRecords } from '../utils/aggregation
 
 const router = express.Router();
 
+// Test mode flag - set TEST_MODE=true in environment to enable mock data
+const TEST_MODE = process.env.TEST_MODE === 'true';
+
+// Mock SAP data for testing without Cloud Connector
+const MOCK_CUSTOMER_DATA = [
+  {
+    BusinessPartner: '1000001',
+    Customer: '1000001',
+    BusinessPartnerName: 'ABC Corporation',
+    CustomerName: 'ABC Corporation',
+    OrganizationBPName1: 'ABC Corp',
+    CityName: 'New York',
+    Country: 'US',
+    PostalCode: '10001',
+    StreetName: '123 Main Street',
+    CustomerAccountGroup: 'KUNA'
+  },
+  {
+    BusinessPartner: '1000002',
+    Customer: '1000002',
+    BusinessPartnerName: 'XYZ Industries',
+    CustomerName: 'XYZ Industries',
+    OrganizationBPName1: 'XYZ Ind',
+    CityName: 'Los Angeles',
+    Country: 'US',
+    PostalCode: '90001',
+    StreetName: '456 Oak Avenue',
+    CustomerAccountGroup: 'KUNA'
+  },
+  {
+    BusinessPartner: '1000003',
+    Customer: '1000003',
+    BusinessPartnerName: 'Global Tech Solutions',
+    CustomerName: 'Global Tech Solutions',
+    OrganizationBPName1: 'Global Tech',
+    CityName: 'Chicago',
+    Country: 'US',
+    PostalCode: '60601',
+    StreetName: '789 Tech Boulevard',
+    CustomerAccountGroup: 'KUNA'
+  }
+];
+
 // Session context storage (in production, use Redis or database)
 const sessionContexts = new Map<string, {
   lastEntity?: string;
@@ -33,6 +76,39 @@ const cleanupOldSessions = () => {
 
 // Run cleanup every 10 minutes
 setInterval(cleanupOldSessions, 10 * 60 * 1000);
+
+/**
+ * GET /api/chat/test-mode
+ * Check if test mode is enabled
+ */
+router.get('/test-mode', (req: express.Request, res: express.Response) => {
+  return res.json({
+    success: true,
+    testMode: TEST_MODE,
+    message: TEST_MODE ? 'Test mode is ENABLED - Using mock data' : 'Test mode is DISABLED - Using real SAP data',
+    mockDataRecords: TEST_MODE ? MOCK_CUSTOMER_DATA.length : 0
+  });
+});
+
+/**
+ * GET /api/chat/mock-data
+ * Get mock SAP data for testing (always works, even without Cloud Connector)
+ */
+router.get('/mock-data', (req: express.Request, res: express.Response) => {
+  logger.info('Returning mock SAP customer data');
+  
+  return res.json({
+    success: true,
+    summary: `Found ${MOCK_CUSTOMER_DATA.length} customer records (MOCK DATA)`,
+    data: MOCK_CUSTOMER_DATA,
+    fields: Object.keys(MOCK_CUSTOMER_DATA[0]),
+    entity: 'A_Customer',
+    serviceName: 'API_BUSINESS_PARTNER',
+    recordCount: MOCK_CUSTOMER_DATA.length,
+    isMockData: true,
+    note: 'This is mock data for testing without Cloud Connector'
+  });
+});
 
 /**
  * GET /api/chat/test-entities
@@ -605,8 +681,18 @@ router.post('/query', async (req: express.Request, res: express.Response) => {
       const mappedFiltersForEntity = mapFiltersToAPI(bestMatch.serviceName, bestMatch.entityName, filters);
       logger.info(`Mapped filters for ${bestMatch.serviceName}/${bestMatch.entityName}:`, mappedFiltersForEntity);
       
-      // Fetch the data
-      const sapData = await getEntityData(bestMatch.serviceName, bestMatch.entityName, mappedFiltersForEntity);
+      // Fetch the data (or use mock data if TEST_MODE is enabled)
+      let sapData: any[];
+      let isMockData = false;
+      
+      if (TEST_MODE) {
+        logger.info('TEST_MODE enabled - using mock data instead of SAP');
+        sapData = MOCK_CUSTOMER_DATA;
+        isMockData = true;
+      } else {
+        sapData = await getEntityData(bestMatch.serviceName, bestMatch.entityName, mappedFiltersForEntity);
+      }
+      
       const results = sapData || [];
 
       // Extract fields
@@ -638,13 +724,14 @@ router.post('/query', async (req: express.Request, res: express.Response) => {
 
       return res.json({
         success: true,
-        summary,
+        summary: isMockData ? `${summary} (MOCK DATA for testing)` : summary,
         data: results,
         fields,
         entity: bestMatch.entityName,
         serviceName: bestMatch.serviceName,
         recordCount: results.length,
-        sessionId: sessionKey
+        sessionId: sessionKey,
+        isMockData: isMockData || undefined
       } as ChatQueryResponse);
 
     } else if (command === 'select_service') {

@@ -14,3 +14,14 @@ applications:
     NODE_ENV: qa
     ALLOWED_ORIGIN: https://cvs-pharmacy-q.us10.hcs.cloud.sap/sap
     CLOUD_CONNECTOR_LOCATION_ID: SAP_DI_Test
+    # Test Mode: Set to 'true' to use mock data (bypass Cloud Connector for testing)
+    TEST_MODE: true
+    # Required SAP connection details (from SED120 destination)
+    SAP_HOST: sapsed.cvshealth.com
+    SAP_PORT: 401
+    SAP_CLIENT: 120
+    SAP_USERNAME: zcloudcons4
+    SAP_PASSWORD: Zcfins4cloudcon@dmin1
+    # Required API keys - UPDATE THESE BEFORE DEPLOYING
+    OPENAI_API_KEY: <YOUR_OPENAI_API_KEY>
+    API_KEY: <YOUR_API_KEY>
